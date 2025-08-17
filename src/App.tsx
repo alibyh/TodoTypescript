@@ -35,6 +35,7 @@ function App() {
   function toAdd(todo: todoType) {
     localStorage.setItem(`${Date.now()}`, JSON.stringify(todo));
     setTodos((prev) => [...prev, todo]);
+    console.log(themColor)
   }
   function handleIsComp(id: string) {
     setTodos((prev) =>

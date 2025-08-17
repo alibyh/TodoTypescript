@@ -44,6 +44,7 @@ const TodoItem = ({
     const sortValue = e.target.value;
     todoOption(sortValue);
   };
+  console.log(current);
   function handleThem() {
     const themToSend = localStorage.getItem("Theme");
     setCurreent(themToSend);
