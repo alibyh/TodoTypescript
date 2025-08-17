@@ -1,0 +1,41 @@
+.toMainContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 30px;
+}
+.todoHeader {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+.header-left {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.toMainContainer .listItem--completed {
+  background-color: aqua;
+}
+/* Стилизация чекбокса */
+.taskRight {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+.checkbox-input {
+  appearance: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid #0d6efd;
+  border-radius: 0.25rem;
+  background-color: #fff;
+  cursor: pointer;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  margin: 0;
+}
