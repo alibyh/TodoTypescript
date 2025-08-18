@@ -51,6 +51,9 @@ Error generating stack: `+e.message+`
   font-size: 34px;
   width: 100%;
   color: ${c=>c.headcolor};
+  @media (max-width: 700px) {
+    font-size: 24px;
+  }
 `,Zv=wa.h3`
   color: ${c=>c.headcolor};
 `,xh=wa.li`
@@ -65,6 +68,7 @@ Error generating stack: `+e.message+`
   justify-content: space-between;
   align-items: center;
   color: ${c=>c.headcolor};
+  
 `,Hh=wa.ul`
   width: max-content;
   width: 100%;
@@ -74,6 +78,9 @@ Error generating stack: `+e.message+`
   padding: 16px;
   border-radius: 10px;
   border: 1.5px solid lightgrey;
+  @media (max-width: 768px) {
+    width:90%;
+  }
 `,Vv=wa.select`
   border: none;
   height: 60px;
@@ -84,6 +91,9 @@ Error generating stack: `+e.message+`
   background-color: transparent;
   font-family: "Roboto Mono", monospace;
   color: ${c=>c.headcolor};
+  @media (max-width: 700px) {
+    font-size: 1rem;
+  }
 `,Lv=({myTodo:c,isComp:r,onDelete:o,onEdit:s,todoOption:m,theTheme:E})=>{const[R,B]=wt.useState(localStorage.getItem("Theme"));let[M,b]=wt.useState(localStorage.getItem("Theme")===JSON.stringify("dark")?"#AFB5A9":"#232323"),[U,q]=wt.useState(localStorage.getItem("Theme")===JSON.stringify("dark")?"white":"black"),[G,L]=wt.useState(localStorage.getItem("Theme")===JSON.stringify("dark")?"black":"white");const P=N=>()=>{r(N)},at=N=>()=>{o(N)},st=N=>()=>{s(N)},ot=N=>{const V=N.target.value;m(V)};console.log(R);function X(){const N=localStorage.getItem("Theme");B(N),N===JSON.stringify("dark")?(E("light"),b("#232323"),q("black"),L("white")):(E("dark"),b("#AFB5A9"),q("white"),L("black"))}return F.jsxs("div",{className:"toMainContainer",children:[F.jsxs("div",{className:"todoHeader",children:[F.jsxs("div",{className:"header-left",children:[F.jsx(jl,{myOnClick:X,children:" change theme"}),F.jsx(Qv,{headcolor:U,children:" My Todo List"})]}),F.jsxs(Vv,{name:"sort",id:"sort",onChange:ot,headcolor:U,children:[F.jsx("option",{value:"newest to oldest",children:"newest to oldest"}),F.jsx("option",{value:"oldest to newest",children:"oldest to newest"})]})]}),F.jsx(Hh,{children:Array.isArray(c)?c.filter(N=>N.isComp===!1).map(N=>F.jsxs(xh,{headcolor:G,backgroundcolor:M,children:[F.jsx("span",{style:{textAlign:"center"},children:N.todoText}),F.jsxs("div",{className:"taskRight",children:[F.jsx(jl,{myOnClick:at(N.id),children:"🗑️"}),F.jsx(jl,{myOnClick:st(N.id),children:"✍️"}),F.jsx(jl,{myOnClick:P(N.id),children:"✅"})]})]},N.id)):F.jsx("span",{style:{textAlign:"center"},children:"nope"})}),F.jsx(Zv,{headcolor:U,children:"completed ✅:"}),F.jsx(Hh,{children:Array.isArray(c)?c.filter(N=>N.isComp===!0).map(N=>F.jsxs(xh,{headcolor:G,backgroundcolor:M,children:[F.jsx("span",{style:{textAlign:"center"},children:N.todoText}),F.jsxs("div",{className:"taskRight",children:[F.jsx(jl,{myOnClick:at(N.id),children:"🗑️"}),F.jsx(jl,{myOnClick:st(N.id),children:"✍️"}),F.jsx(jl,{myOnClick:P(N.id),children:"✅"})]})]},N.id)):F.jsx("span",{style:{textAlign:"center"},children:"nope"})})]})};var Kv=Ch();function Jv({open:c,onClose:r,todo:o,onSave:s}){const[m,E]=wt.useState("");return wt.useEffect(()=>{o&&E(o.todoText)},[o]),c?Kv.createPortal(F.jsx("dialog",{className:"modal",open:!0,children:F.jsxs("div",{className:"modal-content",children:[F.jsx("h2",{style:{color:"black"},children:"Edit Todo"}),F.jsx("input",{type:"text",value:m,onChange:R=>E(R.target.value),className:"edit-input"}),F.jsxs("div",{className:"modal-actions",children:[F.jsx(jl,{myOnClick:()=>s(m),children:"Save"}),F.jsx(jl,{myOnClick:r,children:"Cancel"})]})]})}),document.getElementById("modalContainer")):null}function wv(){const[c,r]=wt.useState([]),[o,s]=wt.useState(),[m,E]=wt.useState(!1);let[R,B]=wt.useState("light"),[M,b]=wt.useState(localStorage.getItem("Theme")===JSON.stringify("dark")?"#232323":"#AFB5A9");const U=Xv`
     body{
       background-color: ${M};
