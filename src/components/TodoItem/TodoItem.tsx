@@ -6,10 +6,10 @@ import { H1Head, ListItemLi, ListItemUl, SelectButton, H3div} from "./TodoItem.s
 
 interface TodoItemProps {
   myTodo?: todoType | todoType[];
-  isComp: (id: string) => void;
-  onDelete: (id: string) => void;
-  onEdit: (id: string) => void;
-  todoOption: (id: string) => void;
+  isComp: (id: number) => void;
+  onDelete: (id: number) => void;
+  onEdit: (id: number) => void;
+  todoOption: (id: 'newest to oldest' | 'oldest to newest') => void;
   theTheme: (id: "dark" | "light") => void;
 }
 
@@ -32,19 +32,20 @@ const TodoItem = ({
     localStorage.getItem("Theme") === JSON.stringify("dark") ? "black" : "white"
   );
   const handleBool = (id: string) => () => {
-    isComp(id);
+    isComp(parseInt(id));
   };
   const handleDelete = (id: string) => () => {
-    onDelete(id);
+    onDelete(parseInt(id));
+    console.log(current);
   };
   const handleEdit = (id: string) => () => {
-    onEdit(id);
+    onEdit(parseInt(id));
   };
   const selectTodoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const sortValue = e.target.value;
-    todoOption(sortValue);
+    todoOption(sortValue as "newest to oldest" | "oldest to newest");
   };
-  console.log(current);
+  
   function handleThem() {
     const themToSend = localStorage.getItem("Theme");
     setCurreent(themToSend);

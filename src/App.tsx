@@ -3,118 +3,112 @@
 import "./App.css";
 import AddTodo from "./components/AddTodo/AddTodo";
 import TodoItem from "./components/TodoItem/TodoItem";
-import type { todoType } from "./components/AddTodo/AddTodo";
 import EditTodo from "./components/EditTodo/EditTodo";
+import Pagination from "./components/Pagination/Pagination";
 import { useEffect, useState } from "react";
 import { createGlobalStyle } from "styled-components";
+import { useMyAppDispatch, useMyAppSelector } from "./store/store";
+import { fetchTodosAsync, createTodoAsync, updateTodoAsync, deleteTodoAsync, toggleTodoAsync, setSortOption } from "./store/todoSlice";
+import type { Todo } from "./api/todos";
 
 function App() {
-  const [todos, setTodos] = useState<todoType[]>([]);
-  const [editingTodo, setEditingTodo] = useState<todoType>();
+  const dispatch = useMyAppDispatch();
+  const { todos, currentPage, limit, filter, sortOption } = useMyAppSelector((state) => state.todos);
+  
+  const [editingTodo, setEditingTodo] = useState<Todo>();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   let [themColor, setThem] = useState("light");
   let [themColorState, setThemState] = useState(
     localStorage.getItem("Theme") === JSON.stringify("light") ? "#AFB5A9" : "#232323"
   );
+  
   const MyStyle = createGlobalStyle`
     body{
       background-color: ${themColorState};
     }
   `;
+
   useEffect(() => {
     if (!localStorage.getItem("Theme")) {
       localStorage.setItem("Theme", JSON.stringify("dark"));
     }
-    const storedTodos = Object.keys(localStorage).map((key) => {
-      const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : null;
-    });
-    setTodos(storedTodos);
   }, []);
 
-  function toAdd(todo: todoType) {
-    localStorage.setItem(`${Date.now()}`, JSON.stringify(todo));
-    setTodos((prev) => [...prev, todo]);
-    console.log(themColor)
+  // Fetch todos when page, limit, or filter changes
+  useEffect(() => {
+    dispatch(fetchTodosAsync({ page: currentPage, limit, filter, sortOption: sortOption }));
+  }, [dispatch, currentPage, limit, filter, sortOption]);
+
+  function toAdd(todo: { todoText: string }) {
+    dispatch(createTodoAsync(todo.todoText));
   }
-  function handleIsComp(id: string) {
-    setTodos((prev) =>
-      prev.map((todo) => {
-        if (todo.id === id) {
-          const updatedTodo = { ...todo, isComp: !todo.isComp };
-          localStorage.setItem(id, JSON.stringify(updatedTodo));
-          return updatedTodo;
-        }
-        return todo;
-      })
-    );
-    console.log(id);
+
+  function handleIsComp(id: number) {
+    dispatch(toggleTodoAsync(id));
   }
-  function toDelete(id: string) {
-    localStorage.removeItem(id);
-    setTodos((prev) => prev.filter((todo) => todo.id !== id));
+
+  function toDelete(id: number) {
+    dispatch(deleteTodoAsync(id));
   }
-  function handleEdit(id: string) {
+
+  function handleEdit(id: number) {
     const todoToEdit = todos.find((todo) => todo.id === id);
     setEditingTodo(todoToEdit);
     setIsEditModalOpen(true);
   }
+
   const saveEdit = (updatedText: string) => {
     if (!editingTodo) return;
-    const updatedTodo = {
-      ...editingTodo,
-      todoText: updatedText,
-    };
-    localStorage.setItem(editingTodo.id, JSON.stringify(updatedTodo));
-    setTodos((prev) =>
-      prev.map((todo) => (todo.id === editingTodo.id ? updatedTodo : todo))
-    );
+    dispatch(updateTodoAsync({ id: editingTodo.id, text: updatedText }));
     setIsEditModalOpen(false);
   };
-  function handleSort(choice: string) {
-    setTodos((prevTodos) => {
-      const todosCopy = [...prevTodos].filter((todo) => todo?.id);
 
-      switch (choice) {
-        case "oldest to newest":
-          return todosCopy.sort((a, b) =>
-            (b.id || "").localeCompare(a.id || "")
-          );
-        case "newest to oldest":
-          return todosCopy.sort((a, b) =>
-            (a.id || "").localeCompare(b.id || "")
-          );
-        default:
-          return todosCopy;
-      }
-    });
+  function handleSort(choice: "newest to oldest" | "oldest to newest") {
+    dispatch(setSortOption(choice));
   }
-  function handleTheme(params:'dark'|'light') {
-    console.log(params)
+
+  function handleTheme(params: 'dark' | 'light') {
+    console.log(params);
     localStorage.setItem("Theme", JSON.stringify(params));
     setThem(JSON.stringify(params));
+    console.log(themColor);
     if (params === "dark") {
       setThemState("#232323");
     } else {
       setThemState("#AFB5A9");
     }
   }
+
+
+  // Convert API todos to the format expected by TodoItem component
+  const convertedTodos = todos.map(todo => ({
+    id: todo.id.toString(),
+    todoText: todo.text,
+    isComp: todo.completed
+  }));
+
+
   return (
     <>
       <MyStyle></MyStyle>
       <AddTodo onTextSubmit={toAdd}></AddTodo>
+      <Pagination />
       <TodoItem
         onEdit={handleEdit}
         isComp={handleIsComp}
         onDelete={toDelete}
-        myTodo={todos}
+        myTodo={convertedTodos}
         todoOption={handleSort}
         theTheme={handleTheme}
       />
       <EditTodo
         open={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
-        todo={editingTodo}
+        todo={editingTodo ? {
+          id: editingTodo.id.toString(),
+          todoText: editingTodo.text,
+          isComp: editingTodo.completed
+        } : undefined}
         onSave={saveEdit}
       />
     </>
